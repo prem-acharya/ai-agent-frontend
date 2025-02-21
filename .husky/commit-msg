@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "🔍 Checking commit message format..."
+echo "Examples of valid commit messages:"
+echo "✅ feat(auth): add login functionality"
+echo "✅ fix(ui): resolve button alignment issue"
+echo "✅ chore(deps): update dependencies"
+echo "----------------------------------------"
+
+npx --no -- commitlint --edit ${1} && echo "✨ Commit message format is valid!" 
