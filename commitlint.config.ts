@@ -25,7 +25,7 @@ const Configuration: UserConfig = {
     "https://github.com/conventional-changelog/commitlint/#what-is-commitlint",
   prompt: {
     messages: {
-      skip: "❌ Commit message validation failed",
+      skip: "❌ Commit message validation failed\n\nExample format:\nfeat(scope): description\nfix(ui): description\nchore(deps): description",
       max: "⚠️ This field cannot be longer than %d characters",
       min: "⚠️ This field cannot be shorter than %d characters",
       emptyWarning: "❌ This field cannot be empty",

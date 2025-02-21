@@ -1,7 +1,14 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-echo "🔍 Running pre-commit checks..."
+echo "\n🔍 Running pre-commit checks..."
 echo "Running lint-staged (ESLint + Prettier)..."
 
-npx lint-staged && echo "✨ Code formatting and linting passed!"
+if npx lint-staged; then
+  echo "✨ Code formatting and linting passed!"
+  echo "🎉 Code is ready to be committed!"
+else
+  echo "\n❌ Code formatting or linting failed!"
+  echo "Please fix the issues above and try committing again."
+  exit 1
+fi

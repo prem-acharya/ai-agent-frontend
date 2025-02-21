@@ -1,11 +1,23 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-echo "🔍 Checking commit message format..."
+echo "\n🔍 Checking commit message format..."
 echo "Examples of valid commit messages:"
 echo "✅ feat(auth): add login functionality"
 echo "✅ fix(ui): resolve button alignment issue"
 echo "✅ chore(deps): update dependencies"
 echo "----------------------------------------"
 
-npx --no -- commitlint --edit ${1} && echo "✨ Commit message format is valid!" 
+if npx --no -- commitlint --edit ${1}; then
+  echo "✨ Commit message format is valid!"
+  echo "🎉 Successfully committed changes!"
+else
+  echo "\n❌ Invalid commit message format!"
+  echo "\nPlease use the format: <type>(scope): <description>"
+  echo "Available types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert"
+  echo "\nExamples:"
+  echo "✅ feat(auth): add login functionality"
+  echo "✅ fix(ui): resolve button alignment issue"
+  echo "✅ chore(deps): update dependencies"
+  exit 1
+fi 
