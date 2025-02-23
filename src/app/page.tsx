@@ -1,7 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { SignedIn, SignedOut, SignInButton } from "@clerk/nextjs";
 import { ArrowRight, Bot, Sparkles, Zap } from "lucide-react";
 import Link from "next/link";
 
@@ -43,35 +41,12 @@ export default function HomePage() {
         </div>
 
         <div className="flex justify-center gap-4">
-          <SignedIn>
-            <Link href="/dashboard">
-              <Button
-                variant="default"
-                size="lg"
-                className="group rounded-full"
-              >
-                Get Started
-                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-0.5" />
-              </Button>
-            </Link>
-          </SignedIn>
-
-          <SignedOut>
-            <SignInButton
-              mode="modal"
-              fallbackRedirectUrl="/dashboard"
-              forceRedirectUrl="/dashboard"
-            >
-              <Button
-                variant="default"
-                size="lg"
-                className="group rounded-full"
-              >
-                Sign Up
-                <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-0.5" />
-              </Button>
-            </SignInButton>
-          </SignedOut>
+          <Link href="/sign-in">
+            <div className="flex items-center gap-2 bg-primary text-background px-4 py-2 rounded-full">
+              Get Started
+              <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-0.5" />
+            </div>
+          </Link>
         </div>
       </div>
     </main>

@@ -17,9 +17,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body className={inter.className}>
+    <ClerkProvider
+      afterSignOutUrl="/"
+      afterSignInUrl="/dashboard"
+      afterSignUpUrl="/dashboard"
+    >
+      <html lang="en" className="dark" suppressHydrationWarning>
+        <body className={inter.className} suppressHydrationWarning>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
