@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import Sidebar from "@/components/dashboard/Sidebar";
+import Header from "@/components/dashboard/Header";
+import Footer from "@/components/dashboard/Footer";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -10,5 +13,14 @@ export default function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <div>{children}</div>;
+  return (
+    <div className="flex h-screen overflow-hidden">
+      <Sidebar />
+      <div className="flex flex-1 flex-col bg-foreground/5">
+        <Header />
+        <main className="flex-1 overflow-y-auto">{children}</main>
+        <Footer />
+      </div>
+    </div>
+  );
 }
