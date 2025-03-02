@@ -8,7 +8,7 @@ export default function HomePage() {
     <main className="min-h-screen flex flex-col items-center justify-center p-8">
       <div className="max-w-3xl text-center space-y-8">
         <div className="space-y-4">
-          <div className="text-6xl pb-2 font-bold bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-transparent">
+          <div className="text-6xl pb-2 font-bold bg-linear-to-r from-primary to-primary/50 bg-clip-text text-transparent">
             AI Agent
           </div>
           <p className="text-xl text-muted-foreground">

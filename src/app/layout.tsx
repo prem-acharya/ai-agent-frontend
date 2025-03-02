@@ -22,11 +22,11 @@ export default function RootLayout({
       afterSignInUrl="/dashboard"
       afterSignUpUrl="/dashboard"
     >
-      <html lang="en" className="dark" suppressHydrationWarning>
-        <body className={inter.className} suppressHydrationWarning>
+      <html lang="en" suppressHydrationWarning>
+        <body className={inter.className} suppressContentEditableWarning>
           <ThemeProvider
             attribute="class"
-            defaultTheme="system"
+            defaultTheme="dark"
             enableSystem
             disableTransitionOnChange
           >
