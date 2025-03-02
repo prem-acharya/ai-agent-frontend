@@ -1,13 +1,21 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import ReactMarkdown from "react-markdown";
 
 interface MessageProps {
   role: "agent" | "user";
   content: string;
+  agents: string[];
+  model: string;
 }
 
-export default function Message({ role, content }: MessageProps) {
+export default function Message({
+  role,
+  content,
+  agents,
+  model,
+}: MessageProps) {
   const isUser = role === "user";
   return (
     <div
@@ -19,7 +27,13 @@ export default function Message({ role, content }: MessageProps) {
           isUser ? "bg-foreground/10" : ""
         )}
       >
-        {content}
+        <ReactMarkdown>{content}</ReactMarkdown>
+        {role === "agent" && (
+          <div className="flex flex-col text-muted-foreground pt-2 text-xs">
+            <p>Agents: {agents.join(", ")}</p>
+            <p>Model: {model}</p>
+          </div>
+        )}
       </div>
     </div>
   );

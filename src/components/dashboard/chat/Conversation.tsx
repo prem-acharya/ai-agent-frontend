@@ -1,27 +1,17 @@
 "use client";
 
 import Message from "@/components/dashboard/chat/Message";
-import { useEffect, useState } from "react";
 
-export default function Conversation() {
-  const [messages, setMessages] = useState<
-    { role: "agent" | "user"; content: string }[]
-  >([
-    { role: "agent", content: "Hello, how can I assist you today?" },
-    { role: "user", content: "I need assistance with my code." },
-    { role: "agent", content: "What specific help do you need?" },
-  ]);
+interface ConversationProps {
+  messages: {
+    role: "agent" | "user";
+    content: string;
+    agents?: string[];
+    model?: string;
+  }[];
+}
 
-  useEffect(() => {
-    const fetchMessages = () => {
-      const newMessages: { role: "agent" | "user"; content: string }[] = [
-        { role: "user", content: "I'm looking for some help with my project." },
-      ];
-      setMessages((prevMessages) => [...prevMessages, ...newMessages]);
-    };
-    fetchMessages();
-  }, []);
-
+export default function Conversation({ messages }: ConversationProps) {
   return (
     <div className="flex justify-center p-4">
       <div className="w-full max-w-3xl flex flex-col h-[calc(70vh-10rem)] md:h-[calc(78vh-10rem)] lg:h-[calc(75vh-10rem)] overflow-y-auto">
@@ -31,7 +21,15 @@ export default function Conversation() {
               No messages yet. Start the conversation!
             </div>
           ) : (
-            messages.map((msg, index) => <Message key={index} {...msg} />)
+            messages.map((msg, index) => (
+              <Message
+                key={index}
+                role={msg.role}
+                content={msg.content}
+                agents={msg.agents || []}
+                model={msg.model || ""}
+              />
+            ))
           )}
         </div>
       </div>
