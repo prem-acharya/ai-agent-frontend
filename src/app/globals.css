@@ -135,3 +135,7 @@
     @apply bg-background text-foreground;
   }
 }
+
+.no-resize::-webkit-resizer {
+  display: none;
+}

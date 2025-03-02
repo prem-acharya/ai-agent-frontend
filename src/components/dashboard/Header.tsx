@@ -8,7 +8,7 @@ export default function Header() {
   const isDark = theme === "dark";
 
   return (
-    <header className="flex justify-end">
+    <div className="flex items-center justify-end sticky top-0 z-50 p-4 bg-background/50 backdrop-blur-sm">
       <UserButton
         afterMultiSessionSingleSignOutUrl="/"
         afterSignOutUrl="/"
@@ -27,6 +27,6 @@ export default function Header() {
           },
         }}
       />
-    </header>
+    </div>
   );
 }
