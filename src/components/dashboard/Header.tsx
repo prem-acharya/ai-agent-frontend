@@ -1,32 +1,54 @@
 "use client";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { UserButton } from "@clerk/nextjs";
-import { useTheme } from "next-themes";
 
-export default function Header() {
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
+const models = [
+  { value: "gemini", label: "Gemini 2.0 Flash" },
+  { value: "gpt4o", label: "GPT-4o" },
+  { value: "gpt-4o-mini", label: "GPT-4o Mini" },
+];
 
+export const Header = () => {
   return (
-    <div className="flex items-center justify-end sticky top-0 z-50 p-4 bg-background/50 backdrop-blur-sm">
-      <UserButton
-        afterMultiSessionSingleSignOutUrl="/"
-        afterSignOutUrl="/"
-        appearance={{
-          elements: {
-            avatarBox: "h-10 w-10 rounded-full",
-          },
-          variables: {
-            colorBackground: isDark ? "#212126" : "#ffffff",
-            colorNeutral: isDark ? "white" : "black",
-            colorPrimary: isDark ? "#ffffff" : "#000000",
-            colorTextOnPrimaryBackground: isDark ? "black" : "white",
-            colorText: isDark ? "white" : "black",
-            colorInputText: isDark ? "white" : "black",
-            colorInputBackground: isDark ? "#26262B" : "#f0f0f0",
-          },
-        }}
-      />
-    </div>
+    <header className="sticky top-0 z-50 w-full border-b">
+      <div className="flex pr-4 pl-4 h-14 items-center justify-between">
+        <div className="flex items-center gap-4">
+          <Select defaultValue="gemini">
+            <SelectTrigger className="w-[180px]" aria-label="Select AI Model">
+              <SelectValue placeholder="Select AI Model" />
+            </SelectTrigger>
+            <SelectContent>
+              {models.map((model) => (
+                <SelectItem
+                  key={model.value}
+                  value={model.value}
+                  className="cursor-pointer"
+                >
+                  {model.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <UserButton
+            afterSignOutUrl="/"
+            appearance={{
+              elements: {
+                avatarBox: "h-8 w-8",
+              },
+            }}
+          />
+        </div>
+      </div>
+    </header>
   );
-}
+};
