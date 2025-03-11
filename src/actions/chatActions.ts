@@ -1,39 +1,32 @@
-import axiosConfig from "@/services/axiosConfig";
-
-export interface UserMessage {
-  role: "user";
+export interface ChatMessage {
+  role: "user" | "agent";
   content: string;
-  websearch: boolean;
 }
 
-export interface AgentMessage {
-  role: "agent";
+export interface ChatRequest {
   content: string;
-  error?: string | null;
-  agents: string[];
   model: string;
+  websearch: boolean;
+  reasoning: boolean;
 }
 
-export const sendMessage = async (messages: UserMessage[]) => {
+export async function sendChatMessage(request: ChatRequest): Promise<Response> {
   try {
-    const response = await axiosConfig.post("/api/v1/chat", {
-      messages,
-      websearch: messages[0].websearch,
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(request),
     });
 
-    const data = response.data;
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
 
-    const message: AgentMessage = {
-      role: "agent",
-      content: data.response,
-      error: data.error,
-      agents: data.agent ? [data.agent] : [""],
-      model: data.model || "gpt-4o",
-    };
-
-    return message;
+    return response;
   } catch (error) {
-    console.error("Error sending message:", error);
+    console.error("Error sending chat message:", error);
     throw error;
   }
-};
+}

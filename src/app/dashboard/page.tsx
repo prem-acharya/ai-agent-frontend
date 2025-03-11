@@ -1,46 +1,49 @@
 "use client";
 
-import Header from "@/components/dashboard/Header";
-import Conversation from "@/components/dashboard/chat/Conversation";
-import ChatInput from "@/components/dashboard/chat/ChatInput";
-import { useState } from "react";
+import { useEffect, useRef } from "react";
+import { useChatStore } from "@/store/chatStore";
+import { ChatMessageItem } from "@/components/dashboard/chat-message";
+import { ChatInput } from "@/components/dashboard/chat-input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Dashboard() {
-  const [messages, setMessages] = useState<
-    {
-      role: "agent" | "user";
-      content: string;
-      agents: string[];
-      model: string;
-    }[]
-  >([]);
+  const { messages } = useChatStore();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const addUserMessage = (message: { role: "user"; content: string }) => {
-    const newMessage = {
-      ...message,
-      agents: [],
-      model: "",
-    };
-    setMessages((prevMessages) => [...prevMessages, newMessage]);
-  };
-
-  const addAgentMessage = (message: {
-    role: "agent";
-    content: string;
-    agents: string[];
-    model: string;
-  }) => {
-    setMessages((prevMessages) => [...prevMessages, message]);
-  };
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
-    <div className="flex flex-col h-screen">
-      <Header />
-      <Conversation messages={messages} />
-      <ChatInput
-        onSendUserMessage={addUserMessage}
-        onSendAgentMessage={addAgentMessage}
-      />
+    <div className="container mx-auto py-6">
+      <div className="flex-1 flex flex-col h-[calc(100vh-7rem)]">
+        <div className="flex-1 flex flex-col overflow-hidden">
+          <ScrollArea className="flex-1">
+            {messages.length === 0 ? (
+              <div className="flex h-full items-center justify-center p-8 text-center">
+                <div className="space-y-2">
+                  <h3 className="text-lg font-semibold">Welcome to AI Agent</h3>
+                  <p className="text-muted-foreground">
+                    Start a conversation with the AI agent by typing a message
+                    below.
+                  </p>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col divide-y">
+                {messages.map((message, index) => (
+                  <ChatMessageItem key={index} message={message} />
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+            )}
+          </ScrollArea>
+
+          <div className="p-4">
+            <ChatInput />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
