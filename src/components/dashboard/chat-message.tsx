@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { useChatStore } from "@/store/chatStore";
-import { models } from "./header";
+import { models } from "./Header";
 
 interface ChatMessageProps {
   message: ChatMessage;
