@@ -20,11 +20,11 @@ export async function GET() {
     return NextResponse.json({
       connected: !!googleAccessToken,
       message: googleAccessToken
-        ? "Connected to Google Tasks"
-        : "Not connected to Google Tasks",
+        ? "Connected to Google api service"
+        : "Not connected to Google api service",
     });
   } catch (error) {
-    console.error("Error checking Google Tasks auth status:", error);
+    console.error("Error checking Google api service auth status:", error);
     return NextResponse.json(
       { connected: false, message: "Error checking connection status" },
       { status: 500 }
