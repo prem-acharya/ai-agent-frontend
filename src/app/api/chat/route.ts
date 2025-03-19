@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     // Get user ID from Clerk auth
     const { userId } = await auth();
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
+    console.log("API URL:", apiUrl);
     // Only attempt to get Google access token if user is authenticated
     let googleAccessToken = null;
     if (userId) {

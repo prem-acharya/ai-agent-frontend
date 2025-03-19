@@ -21,7 +21,7 @@ export async function sendChatMessage(request: ChatRequest): Promise<Response> {
     ) {
       try {
         // Get Google Tasks authentication status
-        const authResponse = await fetch("/api/google/tasks/auth-status");
+        const authResponse = await fetch("/api/google/auth-status");
         if (authResponse.ok) {
           const authData = await authResponse.json();
           if (authData.connected) {
