@@ -7,6 +7,12 @@ import { SendHorizontal, Globe, BrainIcon, Trash2Icon } from "lucide-react";
 import { useChatStore } from "@/store/chatStore";
 import { sendChatMessage } from "@/actions/chatActions";
 
+// Function to add random typing delay
+const createTypingDelay = () => {
+  // Word-level delay (0ms - 2ms )
+  return Math.floor(Math.random() * 2) + 1;
+};
+
 export const ChatInput = () => {
   const [input, setInput] = useState("");
 
@@ -28,14 +34,17 @@ export const ChatInput = () => {
     if (!trimmedInput) return;
 
     try {
+      // Set loading state to true at the beginning
       setLoading(true);
       setInput("");
 
+      // Add user message
       addMessage({
         role: "user",
         content: trimmedInput,
       });
 
+      // Add an empty agent message that will be filled with the response
       addMessage({ role: "agent", content: "" });
 
       const response = await sendChatMessage({
@@ -58,21 +67,48 @@ export const ChatInput = () => {
       if (reader) {
         let accumulatedContent = "";
 
+        // Short initial delay before starting to type
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
         while (true) {
           const { done, value } = await reader.read();
 
-          if (done) break;
+          if (done) {
+            // Ensure the final content is set
+            const finalMessages = [...useChatStore.getState().messages];
+            finalMessages[lastIndex] = {
+              ...finalMessages[lastIndex],
+              content: accumulatedContent,
+            };
+            useChatStore.setState({ messages: finalMessages });
+            break;
+          }
 
           const chunk = decoder.decode(value);
-          accumulatedContent += chunk;
 
-          const updatedMessages = [...useChatStore.getState().messages];
-          updatedMessages[lastIndex] = {
-            ...updatedMessages[lastIndex],
-            content: accumulatedContent,
-          };
+          // Process strictly word by word for precise dot following
+          // Split by whitespace, preserving whitespace and punctuation
+          const words = chunk.match(/\S+|\s+|[,.!?;:'"()[\]{}]/g) || [];
 
-          useChatStore.setState({ messages: updatedMessages });
+          for (const word of words) {
+            if (!word) continue;
+
+            accumulatedContent += word;
+
+            // Update the message content with the accumulated content
+            const updatedMessages = [...useChatStore.getState().messages];
+            updatedMessages[lastIndex] = {
+              ...updatedMessages[lastIndex],
+              content: accumulatedContent,
+            };
+
+            useChatStore.setState({ messages: updatedMessages });
+
+            // Add a variable delay between words to simulate typing
+            // Use longer delays for words, shorter for spaces/punctuation
+            const delay = /\S+/.test(word) ? createTypingDelay() : 30;
+            await new Promise((resolve) => setTimeout(resolve, delay));
+          }
         }
       }
     } catch (error) {
@@ -85,6 +121,7 @@ export const ChatInput = () => {
       };
       useChatStore.setState({ messages: updatedMessages });
     } finally {
+      // Set loading state to false when everything is done
       setLoading(false);
     }
   };
@@ -150,7 +187,7 @@ export const ChatInput = () => {
               type="submit"
               size="icon"
               className="rounded-full"
-              disabled={!input.trim()}
+              disabled={!input.trim() || useChatStore.getState().isLoading}
             >
               <SendHorizontal className="h-4 w-4" />
             </Button>

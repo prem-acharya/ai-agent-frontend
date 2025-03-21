@@ -1,4 +1,6 @@
 import { NextRequest } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+import { getGoogleAccessToken } from "@/config/googleConfig";
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,21 +16,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const response = await fetch(
-      "https://aiagent-prem-api.vercel.app/api/v1/chat",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content,
-          model,
-          websearch,
-          reasoning,
-        }),
-      }
-    );
+    // Get user ID from Clerk auth
+    const { userId } = await auth();
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    console.log("API URL:", apiUrl);
+    // Only attempt to get Google access token if user is authenticated
+    let googleAccessToken = null;
+    if (userId) {
+      googleAccessToken = await getGoogleAccessToken(userId);
+      console.log("Got Google access token:", googleAccessToken ? "Yes" : "No");
+    }
+
+    const response = await fetch(`${apiUrl}/api/v1/chat`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        content,
+        model,
+        websearch,
+        reasoning,
+        google_access_token: googleAccessToken,
+      }),
+    });
 
     if (!response.ok) {
       return new Response(
