@@ -7,12 +7,12 @@ import { ChatInput } from "@/components/dashboard/chat-input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function Dashboard() {
-  const { messages } = useChatStore();
+  const { messages, isLoading } = useChatStore();
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, isLoading]);
 
   return (
     <div className="container mx-auto py-6">

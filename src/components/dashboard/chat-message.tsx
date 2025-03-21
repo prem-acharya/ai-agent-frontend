@@ -1,22 +1,52 @@
 "use client";
 
 import { ChatMessage } from "@/actions/chatActions";
-import ReactMarkdown from "react-markdown";
 import { cn } from "@/lib/utils";
 import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import { useChatStore } from "@/store/chatStore";
 import { models } from "./Header";
+import { useEffect, useRef } from "react";
 
 interface ChatMessageProps {
   message: ChatMessage;
 }
 
+// Typing indicator component - white dot that pulses
+const TypingIndicator = () => {
+  return (
+    <span
+      className="inline-block h-4 w-4 bg-white rounded-full animate-pulse"
+      style={{
+        marginLeft: "2px",
+        verticalAlign: "middle",
+        display: "inline-block",
+      }}
+    />
+  );
+};
+
 export const ChatMessageItem = ({ message }: ChatMessageProps) => {
   const { user } = useUser();
-  const { model } = useChatStore();
+  const { model, isLoading } = useChatStore();
   const isUser = message.role === "user";
   const selectedModel = models.find((m) => m.value === model);
+
+  // Check if this is the last message and if AI is generating
+  const messages = useChatStore.getState().messages;
+  const isLastAIMessage =
+    !isUser && messages.length > 0 && message === messages[messages.length - 1];
+  const isGenerating = isLastAIMessage && isLoading;
+
+  // Ref to find the last text node for appending the indicator
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    // This ensures the loading indicator is attached to the end of content
+    if (isGenerating && contentRef.current) {
+      contentRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [isGenerating, message.content]);
 
   return (
     <div
@@ -64,8 +94,31 @@ export const ChatMessageItem = ({ message }: ChatMessageProps) => {
             : selectedModel?.label || "AI Agent"}
         </div>
 
-        <div className="text-sm">
-          <ReactMarkdown>{message.content}</ReactMarkdown>
+        <div className="text-sm" ref={contentRef}>
+          {message.content === "" && isGenerating ? (
+            <TypingIndicator />
+          ) : (
+            <div style={{ display: "inline" }}>
+              <span
+                dangerouslySetInnerHTML={{
+                  __html: message.content
+                    .replace(/---/g, "<hr />")
+                    .replace(/^###\s+(.*)$/gm, "<h3>$1</h3>")
+                    .replace(/^##\s+(.*)$/gm, "<h2>$1</h2>")
+                    .replace(/^#\s+(.*)$/gm, "<h1>$1</h1>")
+                    .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+                    .replace(/^- (.*)$/gm, "<li>$1</li>")
+                    .replace(/`(.*?)`/g, "<code>$1</code>")
+                    .replace(
+                      /\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g,
+                      "<a href='$2' target='_blank' rel='noopener noreferrer'>$1</a>"
+                    )
+                    .replace(/\n/g, "<br />"),
+                }}
+              />
+              {isGenerating && <TypingIndicator />}
+            </div>
+          )}
         </div>
       </div>
     </div>
