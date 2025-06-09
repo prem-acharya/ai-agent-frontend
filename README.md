@@ -1,5 +1,7 @@
 # Frontend Setup Info
 
+Demo available — see the full walkthrough in the [LinkedIn post.](https://www.linkedin.com/feed/update/urn:li:activity:7332498633633718274/)
+
 ## About the Project
 
 Weekend Project: **Integrate Google Meet and Tasks With LLM**
